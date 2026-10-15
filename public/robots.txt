@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://noeljo23.github.io/sitemap-index.xml
+Sitemap: https://noeljohn.dev/sitemap-index.xml

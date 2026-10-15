@@ -1,4 +1,6 @@
-# noeljo23.github.io
+# noeljohn.dev
+
+Source for https://noeljohn.dev (served by GitHub Pages from this repo).
 
 Personal site of Noel John, built with [Astro](https://astro.build) and deployed to GitHub Pages by GitHub Actions on every push to `main`.
 
@@ -32,4 +34,4 @@ The painting beside the text is `src/assets/dusk.jpg`, shown uncropped.
 
 ## Custom domain
 
-To move to `noeljohn.dev`: buy the domain, add it under the repo's Settings → Pages, point the DNS at GitHub Pages, then change `site` in `astro.config.mjs` and the URL in `public/robots.txt`.
+The site is served at `noeljohn.dev` (registered at Cloudflare, DNS-only records pointing at GitHub Pages). `public/CNAME`, `site` in `astro.config.mjs` and the sitemap URL in `public/robots.txt` must all name this domain. `noeljo23.github.io` redirects here automatically.
