@@ -1,0 +1,18 @@
+---
+import Base from "../layouts/Base.astro";
+import Corners from "../components/Corners.astro";
+import Contact from "../components/Contact.astro";
+---
+
+<Base title="Page not found" noindex>
+  <Corners />
+  <div class="content content-solo" id="content" tabindex="-1">
+    <div class="inner">
+      <h1 class="case-title">Nothing here.</h1>
+      <p class="case-lede">That page doesn't exist. <a href="/">Go back to the start.</a></p>
+      <footer class="site-footer">
+        <Contact label="Contact and profiles, footer" />
+      </footer>
+    </div>
+  </div>
+</Base>

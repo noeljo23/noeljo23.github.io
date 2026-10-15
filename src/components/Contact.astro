@@ -1,0 +1,82 @@
+---
+// Contact block used near the top of the home page and in every footer.
+import { profile } from "../data/site";
+
+interface Props {
+  label?: string;
+}
+
+const { label = "Contact and profiles" } = Astro.props;
+const email = `${profile.email.user}@${profile.email.domain}`;
+---
+
+<div class="contact-block">
+  <nav class="contact" aria-label={label}>
+    <button class="primary copy-email" type="button" aria-label={`Copy email address ${email}`}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"
+        ><rect x="3" y="5" width="18" height="14" rx="1.5"></rect><path d="m3.5 6 8.5 7 8.5-7"></path></svg
+      >
+      <span class="email-text">{email}</span>
+      <span class="copy-hint" aria-hidden="true">Copy</span>
+    </button>
+    <a href={profile.linkedin} rel="me noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+        ><path
+          d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4v-11Z"
+        ></path></svg
+      >
+      LinkedIn
+    </a>
+    <a href={profile.github} rel="me noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+        ><path
+          d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"
+        ></path></svg
+      >
+      GitHub
+    </a>
+    <a href={profile.cv} target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"
+        ><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8l-5-5Z"></path><path
+          d="M14 3v5h5M12 11v6m-3-3 3 3 3-3"></path></svg
+      >
+      CV (PDF)
+    </a>
+  </nav>
+  <span class="sr-only copy-status" aria-live="polite"></span>
+</div>
+
+<script>
+  // Copy the email address; fall back to selecting it if the clipboard is blocked.
+  for (const block of document.querySelectorAll<HTMLElement>(".contact-block")) {
+    const copyBtn = block.querySelector<HTMLButtonElement>(".copy-email");
+    const emailText = block.querySelector<HTMLElement>(".email-text");
+    const status = block.querySelector<HTMLElement>(".copy-status");
+    let timer: number | undefined;
+    const hint = block.querySelector<HTMLElement>(".copy-hint");
+    const show = (text: string, announce: string) => {
+      if (!hint) return;
+      hint.textContent = text;
+      if (status) status.textContent = announce;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        hint.textContent = "Copy";
+        if (status) status.textContent = "";
+      }, 2000);
+    };
+    copyBtn?.addEventListener("click", async () => {
+      const addr = emailText?.textContent ?? "";
+      try {
+        await navigator.clipboard.writeText(addr);
+        show("Copied", "Email address copied");
+      } catch {
+        const range = document.createRange();
+        if (emailText) range.selectNodeContents(emailText);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+        show("Selected", "Email address selected");
+      }
+    });
+  }
+</script>

@@ -1,0 +1,747 @@
+@import "tailwindcss";
+
+/* Colours are taken from the painting: night navy for the page, peach and sun
+   for emphasis in dark; in light, navy becomes the ink with a dusk-orange underline.
+   Dark is the default; light is chosen with the toggle. */
+:root {
+  --bg: #121731;
+  --surface: #1c2758;
+  --ink: #ece9e4;
+  --muted: #a9adc4;
+  --link: #dab387;
+  --link-line: rgb(218 179 135 / 0.45);
+  --hover: #e1cc92;
+  --result: #e1cc92;
+  --rule: rgb(218 179 135 / 0.16);
+  /* Bars around the uncropped painting use its own edge colours: #030509 top, #000 bottom. */
+  --art-bg: linear-gradient(#030509, #000);
+  --btn-bg: #c98e6e;
+  --btn-fg: #121731;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --date-col: 7rem;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #eef0f5;
+  --surface: #ffffff;
+  --ink: #1c2758;
+  --muted: #4d5470;
+  --link: #1c2758;
+  --link-line: rgb(143 91 62 / 0.85);
+  --hover: #8f5b3e;
+  --result: #8f5b3e;
+  --rule: rgb(28 39 88 / 0.14);
+  --art-bg: linear-gradient(#030509, #000);
+  --btn-bg: #1c2758;
+  --btn-fg: #ffffff;
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-color: var(--link-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--hover);
+    text-decoration-color: currentColor;
+  }
+  :focus-visible {
+    outline: 2px solid var(--hover);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--link-line);
+  }
+}
+
+#content:focus {
+  outline: none;
+}
+.skip-link {
+  background: var(--surface);
+  color: var(--ink);
+  padding: 8px 12px;
+}
+
+/* ---------- Split layout ---------- */
+.split {
+  display: grid;
+}
+.art {
+  background: var(--art-bg);
+}
+.art-desktop {
+  display: none;
+}
+.content {
+  min-width: 0;
+  padding: 80px 16px 48px;
+}
+.content-solo .inner {
+  max-width: 680px;
+}
+.inner {
+  max-width: 680px;
+  margin-inline: auto;
+}
+.art-phone,
+.art-end {
+  margin: 40px auto 0;
+  max-width: 420px;
+}
+.art-end {
+  max-width: 320px;
+  margin-top: 56px;
+}
+.art-phone img,
+.art-end img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 960px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr) min(44vw, calc(100dvh * 2500 / 3500));
+  }
+  .art-desktop {
+    order: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+  .art-desktop img {
+    display: block;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+  .art-phone,
+  .art-end {
+    display: none;
+  }
+  .content {
+    padding-block: 88px 64px;
+    padding-inline: clamp(32px, 5vw, 80px);
+  }
+  /* Centre the reading column in the text half. */
+  .inner {
+    margin-inline: auto;
+  }
+}
+
+/* Email button: the address itself, copies on click. */
+.contact button.primary {
+  cursor: pointer;
+}
+.copy-hint {
+  margin-left: 4px;
+  padding-left: 10px;
+  border-left: 1px solid currentColor;
+  font-size: 0.8125rem;
+  opacity: 0.8;
+}
+
+/* ---------- Corners ---------- */
+.avatar-link {
+  position: absolute;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  left: 16px;
+  z-index: 5;
+  display: block;
+  border-radius: 50%;
+}
+.avatar {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 18%;
+  border: 1px solid var(--link-line);
+}
+.theme-toggle {
+  position: absolute;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: 16px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  font: 400 0.875rem/1 var(--sans);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.theme-toggle:hover {
+  border-color: var(--link-line);
+  color: var(--hover);
+}
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+/* In dark the button offers light (sun); in light it offers dark (moon). */
+.theme-toggle .moon-icon,
+:root[data-theme="light"] .theme-toggle .sun-icon {
+  display: none;
+}
+:root[data-theme="light"] .theme-toggle .moon-icon {
+  display: block;
+}
+@media (min-width: 960px) {
+  .avatar-link {
+    top: 24px;
+    left: 24px;
+  }
+  .theme-toggle {
+    top: 24px;
+    right: 28px;
+  }
+}
+
+/* ---------- Intro ---------- */
+.name {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.lede {
+  margin-top: 12px;
+  font-size: 1rem;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.place {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+@media (min-width: 960px) {
+  .name {
+    font-size: 40px;
+  }
+}
+
+/* Contact row */
+.contact-block {
+  margin-top: 24px;
+}
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* On phones the email button takes its own row; the three links share the next. */
+@media (max-width: 639px) {
+  .contact .primary {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+  .contact a {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+}
+.contact a,
+.contact button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  font: 500 0.875rem/1 var(--sans);
+  white-space: nowrap;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+.contact a:hover,
+.contact button:hover {
+  border-color: var(--link-line);
+  color: var(--hover);
+}
+.contact .primary {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border-color: var(--btn-bg);
+}
+.contact .primary:hover {
+  color: var(--btn-fg);
+  opacity: 0.88;
+}
+.contact svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+/* At phone width only the email button keeps its icon, so all four fit on one row. */
+@media (max-width: 479px) {
+  .contact a:not(.primary) svg {
+    display: none;
+  }
+  .contact a {
+    padding: 0 11px;
+  }
+}
+@media (max-width: 399px) {
+  .contact a svg {
+    display: none;
+  }
+  .contact a {
+    padding: 0 9px;
+  }
+}
+.email-line {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.email-line button {
+  font: inherit;
+  color: var(--link);
+  background: none;
+  border: 0;
+  padding: 4px 0 4px 10px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--link-line);
+  text-underline-offset: 3px;
+}
+.email-line button:hover {
+  color: var(--hover);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.facts a {
+  color: var(--muted);
+}
+.facts a:hover {
+  color: var(--hover);
+}
+.facts strong {
+  color: var(--result);
+  font-weight: 500;
+}
+
+/* ---------- Sections ---------- */
+.section {
+  margin-top: 56px;
+}
+.section h2 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+}
+.section > h2 + * {
+  margin-top: 16px;
+}
+
+/* Short / Full story tabs */
+.switch {
+  display: inline-flex;
+  gap: 18px;
+  font-size: 0.875rem;
+}
+.switch button {
+  font: inherit;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0 0 4px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.switch button[aria-selected="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--hover);
+}
+.bio {
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+}
+.bio p + p {
+  margin-top: 14px;
+}
+
+/* Dated entries: title row with the date at its right end, details below at full width. */
+.entries {
+  list-style: none;
+  padding: 0;
+}
+.entries > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 20px;
+  align-items: baseline;
+}
+.entries > li + li {
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+.entry-body {
+  display: contents;
+}
+.entry-body > * {
+  grid-column: 1 / -1;
+}
+.entry-body > :first-child {
+  grid-column: 1;
+  grid-row: 1;
+}
+.when {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  color: var(--muted);
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.projects > li.has-thumb {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.projects > li.has-thumb .entry-body > *:not(:first-child) {
+  grid-column: 1;
+}
+.projects > li.has-thumb .thumb {
+  grid-column: 2;
+  grid-row: 2 / span 4;
+  align-self: start;
+  justify-self: end;
+  margin-top: 8px;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.what {
+  font-weight: 600;
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+a.what {
+  color: var(--ink);
+  text-decoration-color: var(--rule);
+}
+a.what:hover {
+  color: var(--hover);
+  text-decoration-color: currentColor;
+}
+.where {
+  color: var(--muted);
+  font-weight: 400;
+}
+.summary {
+  margin-top: 6px;
+  color: var(--ink);
+}
+.detail {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.lines {
+  margin-top: 10px;
+  padding-left: 1.15rem;
+  list-style: disc;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.lines li + li {
+  margin-top: 8px;
+}
+.lines li::marker {
+  color: var(--muted);
+}
+.outcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.chip {
+  display: inline-block;
+  flex: none;
+  padding: 1px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--ink);
+  font-size: 0.8125rem;
+}
+.result {
+  flex: 1 1 16rem;
+  color: var(--result);
+  text-wrap: pretty;
+}
+.thumb img {
+  display: block;
+  width: 132px;
+  height: auto;
+  border-radius: 6px;
+}
+@media (max-width: 639px) {
+  .entries > li,
+  .projects > li.has-thumb {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .when {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: left;
+    order: -1;
+  }
+  .entry-body > :first-child {
+    grid-row: auto;
+  }
+  .projects > li.has-thumb .entry-body > *:not(:first-child),
+  .projects > li.has-thumb .thumb {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+  .thumb img {
+    width: auto;
+    max-width: 100%;
+    max-height: 180px;
+  }
+}
+
+/* Skills */
+.skills > div {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 2px 16px;
+}
+.skills > div + div {
+  margin-top: 8px;
+}
+.skills dt {
+  font-weight: 500;
+}
+.skills dd {
+  color: var(--muted);
+}
+@media (max-width: 639px) {
+  .skills > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Footer */
+.site-footer {
+  margin-top: 56px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- Project pages ---------- */
+.back {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.case-title {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-top: 16px;
+}
+.case-meta {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.case-lede {
+  margin-top: 20px;
+}
+.facts-list {
+  margin-top: 20px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.facts-list > div {
+  display: grid;
+  grid-template-columns: var(--date-col) minmax(0, 1fr);
+  gap: 2px 16px;
+}
+.facts-list > div + div {
+  margin-top: 8px;
+}
+.facts-list dt {
+  font-weight: 500;
+}
+.facts-list dd {
+  color: var(--muted);
+}
+.facts-list dd.result {
+  color: var(--result);
+}
+@media (max-width: 639px) {
+  .facts-list > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.cover {
+  margin-top: 28px;
+}
+.cover img,
+.prose img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+.prose {
+  max-width: 680px;
+  margin-top: 28px;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+}
+.prose > :first-child {
+  margin-top: 0;
+}
+.prose p,
+.prose ul,
+.prose ol {
+  margin-top: 16px;
+}
+.prose h2 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+  margin-top: 40px;
+}
+.prose ul {
+  list-style: disc;
+  padding-left: 1.3rem;
+}
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.3rem;
+}
+.prose li {
+  margin-top: 6px;
+}
+.prose li::marker {
+  color: var(--muted);
+}
+.prose strong {
+  font-weight: 600;
+}
+.prose img {
+  margin-top: 24px;
+}
+.prose small {
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.pager {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.pager a {
+  display: block;
+}
+.pager-next {
+  text-align: right;
+}
+.pager-dir {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+@media (max-width: 639px) {
+  .pager-next {
+    text-align: left;
+  }
+}
+
+/* External link arrow */
+.ext span {
+  display: inline-block;
+  margin-left: 2px;
+  text-decoration: none;
+}
+
+/* ---------- Motion: colour and opacity only, and a 2px nudge on external arrows ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  .entries > li,
+  .ext span {
+    transition:
+      color 150ms ease,
+      background-color 150ms ease,
+      border-color 150ms ease,
+      text-decoration-color 150ms ease,
+      opacity 150ms ease,
+      translate 150ms ease;
+  }
+  .ext:hover span {
+    translate: 2px -2px;
+  }
+}

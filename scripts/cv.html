@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noel John · CV</title>
+<style>
+/*FONTS*/
+@page { size: Letter; margin: 9mm 12.5mm; }
+:root { --ink: #1c1c1c; --ink-2: #333333; --muted: #676767; --accent: #282828; --rule: #dddddd; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "CV Serif", "Palatino Linotype", Georgia, serif; font-size: 9.1pt; line-height: 1.29; color: var(--ink-2); }
+a { color: inherit; text-decoration: none; }
+header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 7pt; border-bottom: 1.5pt solid var(--ink); }
+h1 { font-size: 21pt; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+.title { font-family: "CV Serif", Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--accent); margin-top: 4pt; }
+.contact { text-align: right; font-size: 8.6pt; line-height: 1.5; }
+.contact a { color: var(--accent); }
+h2 { font-family: "CV Serif", Georgia, serif; font-style: italic; font-size: 7.8pt; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 8.5pt 0 4pt; padding-bottom: 2pt; border-bottom: 0.6pt solid var(--rule); }
+.item { margin-bottom: 4pt; break-inside: avoid; }
+.row { display: flex; justify-content: space-between; gap: 10pt; }
+.what { font-weight: 700; color: var(--ink); }
+.where { font-weight: 400; color: var(--ink-2); }
+.when { font-family: "CV Serif", Georgia, serif; font-style: italic; font-size: 8pt; color: var(--muted); white-space: nowrap; }
+ul { margin: 2pt 0 0 11pt; }
+li { margin-bottom: 1pt; }
+.stack { font-size: 8.3pt; color: var(--muted); margin-top: 1.5pt; }
+.skills div { margin-bottom: 2pt; }
+.skills b { color: var(--ink); font-weight: 700; }
+p.summary { margin-top: 7pt; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Noel John</h1>
+    <p class="title">Data &amp; ML Engineer</p>
+  </div>
+  <div class="contact">
+    <a href="mailto:noeljohn19984501@gmail.com">noeljohn19984501@gmail.com</a><br>
+    <a href="https://www.linkedin.com/in/noeljohn1">linkedin.com/in/noeljohn1</a> · <a href="https://github.com/noeljo23">github.com/noeljo23</a><br>
+    <a href="https://noeljo23.github.io">noeljo23.github.io</a>
+  </div>
+</header>
+
+<p class="summary">Data and ML engineer who builds the data systems teams make decisions on, from pipelines over 10M+ records a day to the reporting and quality checks on top, and who coaches and leads along the way. 2nd worldwide at Ocean Hackathon 2025 and 1st place at the PowerTrust GenAI Hackathon.</p>
+
+<h2>Experience</h2>
+<div class="item">
+  <div class="row"><p><span class="what">Data Analyst (Co-op), Global Operations</span> <span class="where">· Geotab, Vancouver</span></p><p class="when">Jan 2026 – Present</p></div>
+  <ul>
+    <li>Disproved the prevailing theory for a revenue projection overshoot by reconciling it against live data; the review owner made my monthly back-test a standing process.</li>
+    <li>Explained a large recurring gap between two revenue systems, showing nearly all of it was a definition difference and pinning the real defects to specific code.</li>
+    <li>Designed and built the data-quality layer and a Cloud Run failure-diagnosis service for the revenue pipelines, so problems surface before the monthly review.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Data Analyst / Business Analyst</span> <span class="where">· Media.net, Mumbai</span></p><p class="when">Aug 2021 – Aug 2024</p></div>
+  <ul>
+    <li>Automated the team's ETL workflows in Airflow and Alteryx, cutting manual workload by 40% and the monthly reporting cycle from six hours to under one.</li>
+    <li>Cut the typical production data investigation from eight hours to two, and new-analyst onboarding time by 30% through the documentation I kept.</li>
+    <li>Built Python and SQL pipelines over 10M+ records a day on BigQuery and Redshift, and lifetime value models for five apps with 5M+ monthly users.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Teaching Assistant</span> <span class="where">· Northeastern University, Vancouver</span></p><p class="when">Jan 2025 – Apr 2025</p></div>
+  <ul><li>Ran Python exercises, SQL tutorials and Tableau labs for 20 graduate students.</li></ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Global Recreation Ambassador</span> <span class="where">· Northeastern University</span></p><p class="when">Jan 2025 – Dec 2025</p></div>
+  <ul><li>Organised 20+ events for 150+ international students.</li></ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Instructor</span> <span class="where">· Try Catch Classes, Mumbai</span></p><p class="when">May 2023 – May 2024</p></div>
+  <ul><li>Trained working professionals in Alteryx, SQL and Tableau as a then-certified Alteryx instructor; 8 in 10 moved into analytics roles within three months.</li></ul>
+</div>
+
+<h2>Projects &amp; hackathons</h2>
+<div class="item">
+  <div class="row"><p><span class="what">Ocean current classifier</span> <span class="where">· Ocean Hackathon 2025, 1st in Canada and 2nd worldwide at the Brest Grand Finale</span></p><p class="when">Oct – Dec 2025</p></div>
+  <ul>
+    <li>Built the vision model and data pipeline for an EfficientNet-B4 classifier that predicts whether tides, wind or river outflow drives hourly HF-radar current maps; 76.2% test accuracy.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Research assistant for solar investment</span> <span class="where">· PowerTrust GenAI Hackathon, 1st place</span></p><p class="when">Apr 2026</p></div>
+  <ul><li>Source-cited research assistant for solar investment in 10 emerging markets. Five agents check each fact against two official sources before indexing, and it refuses to answer without one.</li></ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Underwater 3D reconstruction benchmark</span> <span class="where">· Research</span></p><p class="when">Jun – Jul 2026</p></div>
+  <ul><li>Geometric benchmark of underwater 3D reconstruction on synthetic scenes with exact ground truth, 210 generic vs water-aware 3DGS runs over 3 seeds. Water-aware 3DGS helped only on high-relief scenes in clear to moderately murky water.</li></ul>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">Other hackathons</span></p><p class="when"></p></div>
+  <ul>
+    <li>Visualization Hackathon, Northeastern (Dec 2024): led a team of 3 to 2nd of 12 teams, analysing 50,000+ sales records.</li>
+    <li>InnoFest 2025: built the video path for a WorkSafeBC fall-protection checker, using Azure Functions and Video Indexer.</li>
+    <li>Northeastern Global Innovation Challenge, Dentons (Mar 2026): a deal handoff tool for an international law firm, on FastAPI.</li>
+  </ul>
+</div>
+
+<h2>Education</h2>
+<div class="item">
+  <div class="row"><p><span class="what">MSc, Data Analytics Engineering</span> <span class="where">· Northeastern University, Vancouver · GPA 3.85</span></p><p class="when">Sep 2024 – Apr 2027</p></div>
+</div>
+<div class="item">
+  <div class="row"><p><span class="what">B.E., Electronics Engineering</span> <span class="where">· University of Mumbai</span></p><p class="when">Aug 2017 – Jun 2021</p></div>
+</div>
+
+<h2>Skills</h2>
+<div class="skills">
+  <div><b>Languages and infra</b> · Python, SQL, R, Docker, Kubernetes, Linux, Git, GitLab CI</div>
+  <div><b>Data</b> · BigQuery, Redshift, PostgreSQL, Airflow, Alteryx, data modelling, data-quality testing</div>
+  <div><b>Cloud</b> · Google Cloud Run, Cloud Composer, AWS (S3, Lambda), Azure Functions, SLURM on H200 GPUs</div>
+  <div><b>ML and LLMs</b> · scikit-learn, PyTorch, TensorFlow, XGBoost, MLflow, SHAP, A/B testing, forecasting, RAG, LangGraph</div>
+  <div><b>BI and analytics</b> · Tableau, Power BI, Looker, Superset, Mixpanel, Amplitude, Google Analytics, Streamlit</div>
+</div>
+</body>
+</html>

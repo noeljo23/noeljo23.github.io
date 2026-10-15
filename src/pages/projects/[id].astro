@@ -1,0 +1,142 @@
+---
+import { Image, getImage } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import Corners from "../../components/Corners.astro";
+import Contact from "../../components/Contact.astro";
+import dusk from "../../assets/dusk.jpg";
+
+export const getStaticPaths = (async () => {
+  const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { id: project.id },
+    props: { project, prev: projects[i - 1], next: projects[i + 1] },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project, prev, next } = Astro.props;
+const { title, summary, context, period, role, stack, metric, badge, result, cover, coverAlt, repo } = project.data;
+const { Content } = await render(project);
+
+// Leave out the context when it only repeats the badge.
+const meta = context === badge ? period : `${context} · ${period}`;
+const chip = metric ?? badge;
+const duskAlt = "Painting of a sunset over layered mountain ridges, under a starry night sky.";
+const duskDesktop = await getImage({ src: dusk, widths: [700, 1000, 1400], sizes: "720px" });
+---
+
+<Base title={title} description={summary} ogType="article">
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    fetchpriority="high"
+    imagesrcset={duskDesktop.srcSet.attribute}
+    imagesizes="720px"
+    media="(min-width: 960px)"
+  />
+  <Corners />
+  <div class="split">
+    <aside class="art art-desktop">
+      <Image src={dusk} alt="" widths={[700, 1000, 1400]} sizes="720px" loading="lazy" />
+    </aside>
+    <div class="content" id="content" tabindex="-1">
+      <article class="inner">
+        <a class="back" href="/">← Noel John, home</a>
+        <h1 class="case-title">{title}</h1>
+        <p class="case-meta">{meta}</p>
+        {chip && <p class="outcome"><span class="chip">{chip}</span></p>}
+
+        {/* SLOT: project one-liner (Noel). Shows summary until he writes it. */}
+        <p class="case-lede">{summary}</p>
+
+        <dl class="facts-list">
+          <div>
+            <dt>My part:</dt>
+            <dd>{role}</dd>
+          </div>
+          {
+            result && (
+              <div>
+                <dt>Result:</dt>
+                <dd class="result">{result}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>Built with:</dt>
+            <dd>{stack.join(", ")}</dd>
+          </div>
+          {
+            repo && (
+              <div>
+                <dt>Code:</dt>
+                <dd>
+                  <a class="ext" href={repo} rel="noopener">
+                    The code is on GitHub<span aria-hidden="true">↗</span>
+                  </a>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+
+        {
+          cover && (
+            <figure class="cover">
+              <a href={cover.src}>
+                <Image src={cover} alt={coverAlt ?? ""} widths={[680, 1360]} sizes="(min-width: 760px) 680px, 100vw" loading="eager" />
+              </a>
+            </figure>
+          )
+        }
+
+        {/* SLOT: three answers per project (Noel). Body text below is unchanged until he rewrites it. */}
+        <div class="prose">
+          <Content />
+        </div>
+        {/* /SLOT: three answers per project */}
+
+        {
+          (prev || next) && (
+            <nav class="pager" aria-label="Other projects">
+              {prev && (
+                <a class="pager-prev" href={`/projects/${prev.id}/`}>
+                  <span class="pager-dir">Previous</span>
+                  {prev.data.title}
+                </a>
+              )}
+              {next && (
+                <a class="pager-next" href={`/projects/${next.id}/`}>
+                  <span class="pager-dir">Next</span>
+                  {next.data.title}
+                </a>
+              )}
+            </nav>
+          )
+        }
+
+        <figure class="art-end">
+          <Image src={dusk} alt={duskAlt} widths={[320, 640, 960]} sizes="320px" />
+        </figure>
+
+        <footer class="site-footer">
+          <Contact label="Contact and profiles, footer" />
+          {/* SLOT: work authorization line (Noel). Renders nothing until he writes it. */}
+        </footer>
+      </article>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Images in the write-up open at full size.
+  for (const img of document.querySelectorAll<HTMLImageElement>(".prose img")) {
+    if (img.closest("a")) continue;
+    const link = document.createElement("a");
+    link.href = img.src;
+    img.replaceWith(link);
+    link.append(img);
+  }
+</script>

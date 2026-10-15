@@ -1,0 +1,19 @@
+---
+// A date or date range. Each side stays whole, so a range only breaks after the dash.
+interface Props {
+  value: string;
+}
+
+const { value } = Astro.props;
+const [start, end] = value.split(" – ");
+---
+
+{
+  end ? (
+    <>
+      <span class="nowrap">{start} –</span> <span class="nowrap">{end}</span>
+    </>
+  ) : (
+    <span class="nowrap">{start}</span>
+  )
+}

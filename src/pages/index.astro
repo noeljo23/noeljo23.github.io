@@ -1,0 +1,285 @@
+---
+import { Image, getImage } from "astro:assets";
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Corners from "../components/Corners.astro";
+import Contact from "../components/Contact.astro";
+import Period from "../components/Period.astro";
+import dusk from "../assets/dusk.jpg";
+import { profile, about, outside, work, awards, education, skills } from "../data/site";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+const byHref = new Map(projects.map((p) => [`/projects/${p.id}/`, p]));
+const duskAlt = "Painting of a sunset over layered mountain ridges, under a starry night sky.";
+
+// The painting is the largest image on both layouts. Each layout preloads only its own copy.
+const duskDesktop = await getImage({ src: dusk, widths: [700, 1000, 1400, 2000], sizes: "720px" });
+const duskPhone = await getImage({ src: dusk, widths: [420, 840, 1260], sizes: "420px" });
+
+// The chip shows the metric, or the badge when there is no metric. It is left out
+// when the result line already starts with the same words.
+const chipFor = (d: (typeof projects)[number]["data"]) => {
+  const chip = d.metric ?? d.badge;
+  return chip && d.result?.startsWith(chip) ? undefined : chip;
+};
+
+// Where a hackathon result only repeats the project title, show the project's badge.
+const awardResult = (a: (typeof awards)[number]) => {
+  const project = a.href ? byHref.get(a.href) : undefined;
+  return project && project.data.title === a.result && project.data.badge ? project.data.badge : a.result;
+};
+---
+
+<Base>
+  <Fragment slot="head">
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      imagesrcset={duskDesktop.srcSet.attribute}
+      imagesizes="720px"
+      media="(min-width: 960px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      imagesrcset={duskPhone.srcSet.attribute}
+      imagesizes="420px"
+      media="(max-width: 959px)"
+    />
+  </Fragment>
+  <Corners />
+  <div class="split">
+    <aside class="art art-desktop">
+      <Image
+        src={dusk}
+        alt={duskAlt}
+        widths={[700, 1000, 1400, 2000]}
+        sizes="720px"
+        loading="lazy"
+      />
+    </aside>
+
+    <div class="content" id="content" tabindex="-1">
+      <div class="inner">
+        <header class="intro">
+          <h1 class="name">{profile.name}</h1>
+          <p class="lede">
+            <span class="nowrap">Data engineering</span>&nbsp;·{" "}<span class="nowrap">Machine learning</span>&nbsp;·{" "}<span class="nowrap">LLM apps</span>&nbsp;·{" "}<span class="nowrap">Analytics</span>
+          </p>
+          <p class="place">Vancouver, BC</p>
+
+          <Contact />
+
+          <p class="facts">
+            <a href="/projects/strait-guardian/"><strong>2nd worldwide</strong> Ocean Hackathon 2025</a>
+            <a href="/projects/solis/"><strong>1st place</strong> PowerTrust GenAI Hackathon</a>
+          </p>
+        </header>
+
+        <figure class="art-phone">
+          <Image src={dusk} alt={duskAlt} widths={[420, 840, 1260]} sizes="420px" />
+        </figure>
+
+        <section class="section" aria-labelledby="work-h">
+          <h2 id="work-h">Experience</h2>
+          <ul class="entries">
+            {
+              work.map((r) => (
+                <li>
+                  <span class="when"><Period value={r.period} /></span>
+                  <div class="entry-body">
+                    <p>
+                      <span class="what">{r.title}</span>
+                      <span class="where">
+                        {" "}
+                        · {r.org}{r.place && `, ${r.place}`}
+                      </span>
+                    </p>
+                    <ul class="lines">
+                      {r.lines.map((line) => (
+                        <li>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="section" aria-labelledby="projects-h">
+          <h2 id="projects-h">Projects</h2>
+          <ul class="entries projects">
+            {
+              projects.map((p) => {
+                const chip = chipFor(p.data);
+                return (
+                  <li class:list={{ "has-thumb": Boolean(p.data.thumb) }}>
+                    <span class="when"><Period value={p.data.period} /></span>
+                    <div class="entry-body">
+                      <a class="what" href={`/projects/${p.id}/`}>
+                        {p.data.title}
+                      </a>
+                      {/* SLOT: project one-liner (Noel). Shows summary until he writes it. */}
+                      <p class="summary">{p.data.summary}</p>
+                      {!p.data.summary.includes("My part") && <p class="detail">My part: {p.data.role}</p>}
+                      {(chip || p.data.result) && (
+                        <p class="outcome">
+                          {chip && <span class="chip">{chip}</span>}
+                          {p.data.result && <span class="result">{p.data.result}</span>}
+                        </p>
+                      )}
+                      {p.data.repo && (
+                        <p class="detail">
+                          <a class="ext" href={p.data.repo} rel="noopener">
+                            Code<span aria-hidden="true">↗</span>
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                    {p.data.thumb && (
+                      <div class="thumb">
+                        <Image src={p.data.thumb} alt={p.data.thumbAlt ?? ""} widths={[240, 480, 720]} sizes="(min-width: 640px) 120px, 240px" />
+                      </div>
+                    )}
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </section>
+
+        <section class="section" aria-labelledby="hack-h">
+          <h2 id="hack-h">Hackathons</h2>
+          <ul class="entries">
+            {
+              awards.map((a) => (
+                <li>
+                  <span class="when"><Period value={a.date} /></span>
+                  <div class="entry-body">
+                    {a.href ? (
+                      <a class="what" href={a.href}>
+                        {a.event}
+                      </a>
+                    ) : (
+                      <span class="what">{a.event}</span>
+                    )}
+                    <p class="detail">{awardResult(a)}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="section" aria-labelledby="about-h">
+          <h2 id="about-h">About</h2>
+          <div class="switch" role="tablist" aria-label="How much to read">
+            <button id="tab-short" role="tab" aria-selected="true" aria-controls="bio-short">Short</button>
+            <button id="tab-full" role="tab" aria-selected="false" aria-controls="bio-full" tabindex="-1">
+              Full story
+            </button>
+          </div>
+          <div id="bio-short" class="bio" role="tabpanel" aria-labelledby="tab-short" tabindex="0">
+            {/* SLOT: About short (Noel). Draft until he writes his own. */}
+            <p>
+              I build the data systems teams rely on to make decisions: the pipelines that move the data, the reporting on
+              top of them, and the checks that make sure the numbers can be trusted.
+            </p>
+            <p>
+              Over the past few years that has meant processing millions of records a day, turning slow manual reporting
+              into automated workflows, and finding out why revenue numbers don't add up, then fixing the logic behind
+              them and adding checks that catch the next one. I also build ML models and LLM tools, two of which took top
+              places at hackathons,
+              including 2nd in the world at the <a href="/projects/strait-guardian/">Ocean Hackathon</a>.
+            </p>
+            <p>
+              I also lead and teach. I've coached working professionals into analytics roles, run graduate labs at
+              Northeastern, led a hackathon team, and organised events for international students. I like owning a
+              problem from the first question through to a fix that lasts, and bringing people along with me.
+            </p>
+          </div>
+          <div id="bio-full" class="bio" role="tabpanel" aria-labelledby="tab-full" tabindex="0" hidden>
+            {/* SLOT: Full story #1 to #4 (Noel) */}
+            {about.map((p) => <p>{p}</p>)}
+            {/* SLOT: Full story #5 (Noel) */}
+            <p>{outside.story}</p>
+            <p>{outside.why}</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="edu-h">
+          <h2 id="edu-h">Education</h2>
+          <ul class="entries">
+            {
+              education.map((e) => (
+                <li>
+                  <span class="when"><Period value={e.period} /></span>
+                  <div class="entry-body">
+                    <p>
+                      <span class="what">{e.degree}</span>
+                      <span class="where">
+                        {" "}
+                        · {e.school}
+                        {e.detail && ` · ${e.detail}`}
+                      </span>
+                    </p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="section" aria-labelledby="skills-h">
+          <h2 id="skills-h">Skills</h2>
+          <dl class="skills">
+            {
+              skills.map((s) => (
+                <div>
+                  <dt>{s.label}</dt>
+                  <dd>{s.items}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <footer class="site-footer">
+          <Contact label="Contact and profiles, footer" />
+          {/* SLOT: work authorization line (Noel). Renders nothing until he writes it. */}
+        </footer>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Short / Full story switch, with arrow, Home and End key support.
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const select = (tab: HTMLButtonElement) => {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute("aria-controls") ?? "");
+      if (panel) panel.hidden = !on;
+    }
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => select(tab));
+    tab.addEventListener("keydown", (e) => {
+      let next: HTMLButtonElement | undefined;
+      if (e.key === "ArrowRight") next = tabs[(i + 1) % tabs.length];
+      else if (e.key === "ArrowLeft") next = tabs[(i + tabs.length - 1) % tabs.length];
+      else if (e.key === "Home") next = tabs[0];
+      else if (e.key === "End") next = tabs[tabs.length - 1];
+      if (!next) return;
+      e.preventDefault();
+      select(next);
+      next.focus();
+    });
+  });
+</script>
