@@ -4,7 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://noeljohn.dev",
+  site: "https://www.noeljohn.dev",
   integrations: [sitemap()],
   build: { inlineStylesheets: "always" },
   vite: { plugins: [tailwindcss()] },
